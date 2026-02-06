@@ -1,0 +1,91 @@
+<% layout("/layouts/boilerplate") %>
+    <body>
+
+        <div id="filter">
+            <div class="filter">
+              <div><i class="fa-solid fa-fire"></i></div>
+              <p>Trending</p>           
+            </div>
+            <div class="filter">
+            <div><i class="fa-solid fa-bed"></i></i></div>
+               <p>Rooms</p>           
+            </div>
+            <div class="filter">
+             <div><i class="fa-solid fa-city"></i></i></div>
+              <p>Amazing cities</p>         
+            </div>
+            <div class="filter">
+              <div><i class="fa-solid fa-person-swimming"></i></div>
+              <p>Pools</p>         
+            </div>
+            <div class="filter">
+              <div><i class="fa-solid fa-mountain"></i></i></div>
+              <p>Hill Stations</p>         
+            </div>
+            <div class="filter">
+              <div><i class="fa-solid fa-star"></i></div> 
+              <p>Star Hotles</p>          
+            </div>
+            <div class="filter">
+             <div><i class="fa-solid fa-house"></i> </div>
+              <p>Pravite house</p>          
+            </div>
+            <div class="filter">
+              <div><i class="fa-solid fa-tag"></i></div>
+              <p>Best Deals</p>         
+            </div>
+            <div class="filter">
+              <div><i class="fa-solid fa-crown"></i></i></div>
+              <p>Premium </p>         
+            </div>    
+            <div class="filter">
+              <div><i class="fa-solid fa-location-dot"></i></div>
+              <p> Near by You</p>          
+            </div>
+            <div class="filter">
+              <div><i class="fa-solid fa-heart"></i> </div>
+              <p>Wishlist</p>          
+            </div>
+
+            <div class="tax-toggle">
+              <div class="form-check-reverse form-switch">
+                 <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+                 <label class="form-check-label" for="switchCheckDefault">Add Taxes to Total</label>
+               </div>
+            </div> 
+        </div>
+        
+        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+            <% for(let listing of allListings){ %>
+                <a href="/listings/<%= listing._id %>" class="listing-link">
+                    <div class="card listing-card">
+                        <img src="<%= listing.image.url %>" class="card-img-top" alt="image" style="height:20rem;">
+                        <div class="card-img-overlay"></div>
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                <%=listing.title %>
+                            </h4>
+                            <%= listing.description%> <br>
+                            &#8377 <%= listing.price ? listing.price.toLocaleString() : "N/A" %>/Night
+                            <i class="tax-info">  &nbsp; +18% GST</i>
+                        </div>
+                    </div>
+                </a>
+                <% } %>
+        </div>
+
+    </body>
+
+    <script>
+        let taxSwitch = document.getElementById("switchCheckDefault");
+        taxSwitch.addEventListener("click",()=>{
+            let taxInfo = document.getElementsByClassName("tax-info");
+            for (info of taxInfo){
+              if(info.style.display !="inline"){
+                info.style.display ="inline";
+              } else{
+                info.style.display ="none";
+              }
+            }
+         });
+    </script>
