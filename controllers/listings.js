@@ -31,12 +31,10 @@ module.exports.createListing = async (req, res, next) => {
     // let listing = req.body.listing;
 
     const newListing = new Listing(req.body.listing);
-    console.log("REQ FILE:", req.file);
-    console.log("REQ BODY:", req.body);
 
     if (req.file) {
-        let url = req.file.path;
-        let filename = req.file.filename;
+        let url = req.file.path || req.file.url || req.file.secure_url;
+        let filename = req.file.filename || req.file.public_id;
         newListing.image = { url, filename };
     }
 
@@ -61,12 +59,10 @@ module.exports.editListing = async (req, res) => {
 module.exports.updateListing = async (req, res) => {
     let { id } = req.params;
     let listing = await Listing.findByIdAndUpdate(id, req.body.listing);
-    console.log("REQ FILE (UPDATE):", req.file);
-
 
     if (typeof req.file !== "undefined") {
-        let url = req.file.path;
-        let filename = req.file.filename;
+        let url = req.file.path || req.file.url || req.file.secure_url;
+        let filename = req.file.filename || req.file.public_id;
         listing.image = { url, filename };
         await listing.save();
     }
