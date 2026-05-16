@@ -1,0 +1,1039 @@
+<% layout("/layouts/boilerplate") %>
+<% 
+  let mainImg = listing.image ? listing.image.url : '';
+  let extraImgs = listing.images || [];
+  let total = 1 + extraImgs.length;
+%>
+
+<!-- Photo Gallery Modal (Premium XL Style) -->
+<div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true" style="z-index: 9999;">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content bg-transparent border-0">
+      <div class="modal-body p-0 position-relative">
+        <!-- Close Button (Floating) -->
+        <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-4 shadow-lg" data-bs-dismiss="modal" aria-label="Close" style="z-index: 10000; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));"></button>
+        
+        <div id="photoCarousel" class="carousel slide" data-bs-ride="false" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); border-radius: 1.5rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
+                <img src="<%= mainImg %>" class="d-block w-100 h-100" style="object-fit: contain; padding: 20px;">
+              </div>
+            </div>
+            <% for(let img of extraImgs) { %>
+              <div class="carousel-item">
+                <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
+                  <img src="<%= img.url %>" class="d-block w-100 h-100" style="object-fit: contain; padding: 20px;">
+                </div>
+              </div>
+            <% } %>
+          </div>
+          
+          <% if(total > 1) { %>
+            <button class="carousel-control-prev" type="button" data-bs-target="#photoCarousel" data-bs-slide="prev" style="width: 8%;">
+              <span class="carousel-control-prev-icon p-3 bg-white bg-opacity-25 rounded-circle border border-white border-opacity-50" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#photoCarousel" data-bs-slide="next" style="width: 8%;">
+              <span class="carousel-control-next-icon p-3 bg-white bg-opacity-25 rounded-circle border border-white border-opacity-50" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          <% } %>
+          
+          <!-- Counter (Elegant Badge) -->
+          <div class="position-absolute bottom-0 start-50 translate-middle-x mb-4">
+            <span class="badge rounded-pill bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25 shadow-sm" style="font-size: 0.9rem; backdrop-filter: blur(5px);">
+              <span id="carouselCounter">1</span> / <%= total %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div class="row mt-4 mb-3">
+    <div class="col-8 offset-2">
+      <%- include("../includes/flash.ejs") %>
+      <h3 class="fw-bold mb-3"><%= listing.title %></h3>
+    </div>
+  </div>
+
+  <div class="row mb-5">
+    <div class="col-8 offset-2">
+      <!-- Dynamic Photo Gallery Grid -->
+
+      <div class="photo-gallery rounded-4 overflow-hidden mb-4 shadow-sm" style="position: relative;">
+        <% if (total === 1) { %>
+          <!-- Case 1: Only 1 Image -->
+          <div class="row g-0">
+            <div class="col-12">
+              <img src="<%= mainImg %>" class="w-100 gallery-img" style="height: 450px; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#photoModal">
+            </div>
+          </div>
+        <% } else if (total === 2) { %>
+          <!-- Case 2: Only 2 Images -->
+          <div class="row g-1">
+            <div class="col-6">
+              <img src="<%= mainImg %>" class="w-100 gallery-img" style="height: 450px; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#photoModal">
+            </div>
+            <div class="col-6">
+              <img src="<%= extraImgs[0].url %>" class="w-100 gallery-img" style="height: 450px; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#photoModal">
+            </div>
+          </div>
+        <% } else if (total === 3) { %>
+          <!-- Case 3: 3 Images -->
+          <div class="row g-1">
+            <div class="col-md-8">
+              <img src="<%= mainImg %>" class="w-100 gallery-img" style="height: 450px; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#photoModal">
+            </div>
+            <div class="col-md-4">
+              <div class="d-flex flex-column gap-1">
+                <img src="<%= extraImgs[0].url %>" class="w-100 gallery-img" style="height: 223px; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#photoModal">
+                <img src="<%= extraImgs[1].url %>" class="w-100 gallery-img" style="height: 223px; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#photoModal">
+              </div>
+            </div>
+          </div>
+        <% } else { %>
+          <!-- Case 4: 4 or more Images (Airbnb 5-Grid style) -->
+          <div class="row g-1">
+            <div class="col-md-6">
+              <img src="<%= mainImg %>" class="w-100 gallery-img" style="height: 400px; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#photoModal">
+            </div>
+            <div class="col-md-6">
+              <div class="row g-1">
+                <% for(let i = 0; i < 4; i++) { %>
+                  <div class="col-6">
+                    <% if(extraImgs[i]) { %>
+                      <img src="<%= extraImgs[i].url %>" class="w-100 gallery-img" style="height: 198px; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#photoModal">
+                    <% } else { %>
+                      <div class="w-100 d-flex align-items-center justify-content-center bg-light" style="height: 198px;">
+                        <i class="fa-solid fa-image text-muted" style="font-size: 2rem;"></i>
+                      </div>
+                    <% } %>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% } %>
+
+        <% if(total > 1) { %>
+        <button class="btn btn-light fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#photoModal" style="position: absolute; bottom: 16px; right: 16px; border-radius: 0.5rem; border: 1px solid #222; padding: 0.5rem 1rem; z-index: 5;">
+          <i class="fa-solid fa-grip me-2"></i>Show all photos (<%= total %>)
+        </button>
+        <% } %>
+      </div>
+
+      <div class="card listing-card shadow-lg border-0 rounded-4 overflow-hidden">
+
+        <div class="card-body p-4 p-md-5">
+          <div class="d-flex align-items-center mb-4">
+            <% 
+              let initials = "W"; 
+              let hostName = "Wanderlust User";
+              if (listing.owner && listing.owner.username) {
+                  hostName = listing.owner.username;
+                  let names = hostName.split(' ').filter(n => n.length > 0);
+                  if (names.length >= 2) {
+                      initials = (names[0].charAt(0) + names[names.length-1].charAt(0)).toUpperCase();
+                  } else if (names.length === 1) {
+                      initials = names[0].charAt(0).toUpperCase();
+                  }
+              }
+            %>
+            <% if(listing.owner && listing.owner.profileImage && listing.owner.profileImage.url && !listing.owner.profileImage.url.includes("dwy7q5x2g") && listing.owner.profileImage.url !== "") { %>
+                <img src="<%= listing.owner.profileImage.url %>" class="rounded-circle me-3" style="width: 55px; height: 55px; object-fit: cover; border: 2px solid #ff385c;">
+            <% } else { %>
+                <div class="rounded-circle me-3 d-flex justify-content-center align-items-center bg-danger text-white fw-bold fs-4" style="width: 55px; height: 55px;">
+                    <%= initials %>
+                </div>
+            <% } %>
+            <div class="flex-grow-1">
+              <p class="mb-0 fw-bold fs-5">Hosted by <%= hostName %></p>
+              <p class="text-muted mb-0 small">Superhost</p>
+            </div>
+            <% if (currUser && listing.owner && !listing.owner._id.equals(currUser._id)) { %>
+                <button class="btn btn-outline-dark rounded-pill px-4 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#chatModal">
+                    <i class="fa-regular fa-comment-dots me-2"></i> Message Host
+                </button>
+            <% } %>
+          </div>
+          
+          <hr>
+          
+          <p class="card-text fs-5 my-4" style="line-height: 1.6;">
+            <%= listing.description %>
+          </p>
+          
+          <div class="bg-light p-4 rounded-4 mb-3">
+            <h5 class="fw-bold mb-3">Listing Details</h5>
+            <div class="row">
+              <div class="col-md-6 mb-2">
+                <i class="fa-solid fa-indian-rupee-sign me-2 text-danger"></i> <span class="fw-bold fs-5"><%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %></span> <span class="text-muted">/ night</span>
+              </div>
+              <div class="col-md-6 mb-2">
+                <i class="fa-solid fa-location-dot me-2 text-danger"></i> <%= listing.location %>, <%= listing.country %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking Section (Hidden ONLY for the Owner, except for Seed Data) -->
+          <% 
+            const seedOwnerId = "672ef4689a83bb82eac61046";
+            const ownerId = (listing.owner && listing.owner._id) ? listing.owner._id.toString() : (listing.owner ? listing.owner.toString() : "");
+            const isSeedData = ownerId === seedOwnerId;
+            const isOwner = currUser && ownerId === currUser._id.toString();
+          %>
+          <% if (!currUser || !isOwner || isSeedData) { %>
+          <div class="bg-light p-4 rounded-4 mb-3 mt-4" style="border: 2px solid #ff385c;">
+            <div id="bookingSection">
+              <% if (userBooking) { %>
+                <!-- Active Reservation Card (Visible by default) -->
+                <div id="bookingStatusCard" class="alert alert-success border-0 shadow-sm rounded-4 p-4 mb-0 animate__animated animate__pulse">
+                  <div class="d-flex align-items-center mb-3">
+                    <div class="position-relative">
+                        <i class="fa-solid fa-calendar-check fs-2 me-3"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light" style="font-size: 0.6rem;">LIVE</span>
+                    </div>
+                    <div>
+                      <h5 class="fw-bold mb-0" id="liveBookingStatus">Calculating status...</h5>
+                      <p class="text-muted small mb-0">You have a confirmed reservation for this stay.</p>
+                    </div>
+                  </div>
+                  <div class="bg-white rounded-3 p-3 mb-3 text-dark shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small fw-bold text-muted text-uppercase">Dates</span>
+                        <span class="badge bg-light text-dark border"><%= new Date(userBooking.checkIn).toLocaleDateString() %> - <%= new Date(userBooking.checkOut).toLocaleDateString() %></span>
+                    </div>
+                    <p class="mb-0 small"><strong>Guests:</strong> <%= userBooking.guests %> Guests</p>
+                  </div>
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <button id="rescheduleBtn" class="btn btn-outline-success w-100 fw-bold py-2 rounded-3 border-2">Reschedule</button>
+                    </div>
+                    <div class="col-6">
+                      <form action="/listings/<%= listing._id %>/booking/<%= userBooking._id %>?_method=DELETE" method="POST">
+                        <button class="btn btn-danger w-100 fw-bold py-2 rounded-3" id="cancelTripBtn">Cancel Trip</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+                <script>
+                (() => {
+                    const checkIn = new Date("<%= userBooking.checkIn %>");
+                    const checkOut = new Date("<%= userBooking.checkOut %>");
+                    const today = new Date();
+                    const statusText = document.getElementById('liveBookingStatus');
+                    
+                    const diffInTime = checkIn.getTime() - today.getTime();
+                    const daysToStart = Math.ceil(diffInTime / (1000 * 3600 * 24));
+                    
+                    const diffToEnd = checkOut.getTime() - today.getTime();
+                    const daysToEnd = Math.ceil(diffToEnd / (1000 * 3600 * 24));
+
+                    if (today >= checkIn && today <= checkOut) {
+                        statusText.innerHTML = `<span class="text-success">Enjoying your stay!</span> <small class="text-muted fs-6">(Ends in ${daysToEnd} days)</small>`;
+                    } else if (daysToStart === 0) {
+                        statusText.innerHTML = "Starts Today! 🎒";
+                    } else if (daysToStart === 1) {
+                        statusText.innerHTML = "Starts Tomorrow! ✈️";
+                    } else if (daysToStart > 0) {
+                        statusText.innerHTML = `Starts in ${daysToStart} days! ⏳`;
+                    } else {
+                        statusText.innerHTML = "Trip Completed ✨";
+                    }
+
+                    // Auto-Popup Reminder for upcoming trips (within 3 days)
+                    if (daysToStart > 0 && daysToStart <= 3) {
+                        setTimeout(() => {
+                            const toastContainer = document.createElement('div');
+                            toastContainer.className = 'position-fixed bottom-0 start-50 translate-middle-x p-3';
+                            toastContainer.style.zIndex = '3000';
+                            toastContainer.innerHTML = `
+                                <div class="toast show shadow-lg border-0" style="border-radius: 1.5rem; background: linear-gradient(135deg, #ff385c, #e03150); color: white; min-width: 320px;">
+                                    <div class="toast-body p-4 text-center">
+                                        <i class="fa-solid fa-suitcase-rolling mb-3" style="font-size: 2.5rem;"></i>
+                                        <h5 class="fw-bold">Pack your bags!</h5>
+                                        <p class="mb-3 opacity-75">Your adventure at <strong><%= listing.title %></strong> starts in ${daysToStart} days. Are you ready?</p>
+                                        <button type="button" class="btn btn-light btn-sm fw-bold rounded-pill px-4" data-bs-dismiss="toast">I'm Ready!</button>
+                                    </div>
+                                </div>
+                            `;
+                            document.body.appendChild(toastContainer);
+                        }, 1500);
+                    }
+                })();
+                </script>
+
+                <!-- Rescheduling UI (Hidden by default) -->
+                <div id="rescheduleUI" style="display: none;">
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0" style="color: #ff385c;"><i class="fa-solid fa-clock-rotate-left me-2"></i>Reschedule Stay</h5>
+                    <button type="button" id="cancelRescheduleBtn" class="btn btn-link text-muted text-decoration-none p-0 fw-bold">Cancel</button>
+                  </div>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label fw-bold small text-muted">CHECK-IN</label>
+                      <input type="date" id="checkin" class="form-control rounded-3" min="">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-bold small text-muted">CHECK-OUT</label>
+                      <input type="date" id="checkout" class="form-control rounded-3" min="">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-bold small text-muted">GUESTS</label>
+                      <select id="guests" class="form-select rounded-3">
+                        <option value="1">1 Guest</option>
+                        <option value="2">2 Guests</option>
+                        <option value="3">3 Guests</option>
+                        <option value="4">4 Guests</option>
+                        <option value="5">5 Guests</option>
+                        <option value="6">6+ Guests</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                      <div class="w-100">
+                        <p class="mb-1 text-muted small">New Estimated Total</p>
+                        <p class="fs-4 fw-bold mb-0" style="color: #ff385c;" id="bookingTotal">&#8377 <%= listing.price ? listing.price.toLocaleString("en-IN") : "0" %></p>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <form action="/listings/<%= listing._id %>/booking/checkout" method="POST" id="rescheduleForm" class="mt-3">
+                    <input type="hidden" name="checkIn" id="hiddenRescheduleCheckin">
+                    <input type="hidden" name="checkOut" id="hiddenRescheduleCheckout">
+                    <input type="hidden" name="guests" id="hiddenRescheduleGuests">
+                    <div class="col-12 mt-3">
+                      <button type="submit" class="btn w-100 py-3 fw-bold fs-5 rounded-3 shadow-sm" id="rescheduleConfirmBtn" style="background: linear-gradient(135deg, #ff385c, #e03150); color: white; border: none; transition: all 0.3s;">
+                        <i class="fa-solid fa-credit-card me-2"></i>Confirm Changes
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              <% } else { %>
+                <!-- Default Booking Form -->
+                <h5 class="fw-bold mb-4" style="color: #ff385c;"><i class="fa-solid fa-calendar-check me-2"></i>Book This Place</h5>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold small text-muted">CHECK-IN</label>
+                    <input type="date" id="checkin" class="form-control rounded-3" min="">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold small text-muted">CHECK-OUT</label>
+                    <input type="date" id="checkout" class="form-control rounded-3" min="">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold small text-muted">GUESTS</label>
+                    <select id="guests" class="form-select rounded-3">
+                      <option value="1">1 Guest</option>
+                      <option value="2" selected>2 Guests</option>
+                      <option value="3">3 Guests</option>
+                      <option value="4">4 Guests</option>
+                      <option value="5">5 Guests</option>
+                      <option value="6">6+ Guests</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 d-flex align-items-end">
+                    <div class="w-100">
+                      <p class="mb-1 text-muted small">Estimated Total</p>
+                      <p class="fs-4 fw-bold mb-0" style="color: #ff385c;" id="bookingTotal">&#8377 <%= listing.price ? listing.price.toLocaleString("en-IN") : "0" %></p>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <form action="/listings/<%= listing._id %>/booking/checkout" method="POST" id="bookingForm" class="mt-3">
+                  <input type="hidden" name="checkIn" id="hiddenCheckin">
+                  <input type="hidden" name="checkOut" id="hiddenCheckout">
+                  <input type="hidden" name="guests" id="hiddenGuests">
+                  <div class="col-12 mt-3">
+                    <button type="submit" class="btn w-100 py-3 fw-bold fs-5 rounded-3 shadow-sm" id="bookNowBtn" style="background: linear-gradient(135deg, #ff385c, #e03150); color: white; border: none; transition: all 0.3s;">
+                      <i class="fa-solid fa-credit-card me-2"></i>Secure Checkout
+                    </button>
+                    <p class="text-center text-muted small mt-2 mb-0">Powered by Stripe — Encrypted & Secure</p>
+                  </div>
+                </form>
+              <% } %>
+            </div>
+          </div>
+          <% } %>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-3 mb-5">
+    <div class="col-8 offset-2">
+
+      <% if (currUser && listing.owner && listing.owner._id.equals(currUser._id)) { %>
+        <div class="d-flex mb-5 gap-3">
+          <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark px-4 py-2 fw-bold rounded-3">Edit Listing</a>
+
+          <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" id="deleteListingForm">
+            <button type="button" class="btn btn-outline-danger px-4 py-2 fw-bold rounded-3" id="deleteListingBtn">Delete Listing</button>
+          </form>
+        </div>
+      <% } %>
+
+      <% if (currUser) { %>
+        <hr class="mb-5" />
+        <div class="d-flex align-items-center mb-4">
+            <div class="rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 45px; height: 45px; background: linear-gradient(135deg, #ff385c, #e03150);">
+                <i class="fa-solid fa-pen-fancy text-white"></i>
+            </div>
+            <h4 class="mb-0 fw-bold">Write a Review</h4>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-4 mb-5 overflow-hidden">
+            <div class="card-body p-4">
+                <form action="/listings/<%= listing._id %>/reviews" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
+                  <div class="mb-4">
+                    <label class="form-label fw-bold mb-2"><i class="fa-solid fa-star me-1" style="color: #ff385c;"></i> Your Rating</label>
+                    <fieldset class="starability-growRotate">
+                      <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating" />
+                      <input type="radio" id="rate1" name="review[rating]" value="1" />
+                      <label for="rate1" title="Terrible">1 star</label>
+                      <input type="radio" id="rate2" name="review[rating]" value="2" />
+                      <label for="rate2" title="Not good">2 stars</label>
+                      <input type="radio" id="rate3" name="review[rating]" value="3" />
+                      <label for="rate3" title="Average">3 stars</label>
+                      <input type="radio" id="rate4" name="review[rating]" value="4" />
+                      <label for="rate4" title="Very good">4 stars</label>
+                      <input type="radio" id="rate5" name="review[rating]" value="5" />
+                      <label for="rate5" title="Amazing">5 stars</label>
+                    </fieldset>
+                  </div>
+
+                  <div class="mb-4">
+                    <label for="comment" class="form-label fw-bold mb-2"><i class="fa-solid fa-comment me-1" style="color: #ff385c;"></i> Your Experience</label>
+                    <textarea name="review[comment]" id="comment" rows="4" class="form-control rounded-3 border-0 bg-light" style="resize: none;" placeholder="Tell others what you loved about this place..." required></textarea>
+                    <div class="invalid-feedback">
+                      Please share your experience before submitting
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <label for="reviewImage" class="form-label fw-bold mb-2"><i class="fa-solid fa-image me-1" style="color: #ff385c;"></i> Photo of your stay (Optional)</label>
+                    <input type="file" name="reviewImage" id="reviewImage" class="form-control rounded-3 border-0 bg-light py-2">
+                    <div class="form-text mt-2 small">Actual photos help other guests see the real place!</div>
+                  </div>
+
+                  <button class="btn px-5 py-3 fw-bold rounded-3 w-100" style="background: linear-gradient(135deg, #ff385c, #e03150); color: white; border: none; transition: all 0.3s;">
+                    <i class="fa-solid fa-paper-plane me-2"></i>Post Review
+                  </button>
+                </form>
+            </div>
+        </div>
+      <% } %>
+      
+      <% if (listing.reviews.length > 0) { %>
+        <hr class="mb-4" />
+        <div class="d-flex align-items-center mb-4">
+            <i class="fa-solid fa-star me-2" style="color: #222; font-size: 1.3rem;"></i>
+            <h4 class="mb-0 fw-bold"><%= listing.reviews.length %> review<%= listing.reviews.length > 1 ? 's' : '' %></h4>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4 mb-4">
+          <% for (let review of listing.reviews) { %>
+            <div class="col">
+              <div class="review-airbnb-card">
+                <!-- Header: Avatar + Name + Date -->
+                <div class="d-flex align-items-center mb-2">
+                    <% if(review.author && review.author.profileImage && review.author.profileImage.url && !review.author.profileImage.url.includes("dwy7q5x2g") && review.author.profileImage.url !== "") { %>
+                        <img src="<%= review.author.profileImage.url %>" class="rounded-circle me-3" style="width: 44px; height: 44px; object-fit: cover;">
+                    <% } else { %>
+                        <div class="rounded-circle me-3 d-flex justify-content-center align-items-center text-white fw-bold" style="width: 44px; height: 44px; background: #222; font-size: 1.1rem;">
+                            <%= review.author ? review.author.username.charAt(0).toUpperCase() : "A" %>
+                        </div>
+                    <% } %>
+                    <div>
+                        <h6 class="fw-bold mb-0"><%= review.author ? review.author.username : "Anonymous" %></h6>
+                        <p class="text-muted mb-0" style="font-size: 0.8rem;">On WanderLust</p>
+                    </div>
+                </div>
+                <!-- Stars + Date -->
+                <div class="d-flex align-items-center mb-2">
+                    <p class="starability-result m-0 me-2" style="transform: scale(0.55); transform-origin: left center;" data-rating="<%= review.rating %>"></p>
+                    <span class="text-muted" style="font-size: 0.8rem;"><%= review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : '' %></span>
+                </div>
+                <!-- Comment (truncated with Show more) -->
+                <div class="review-text-container">
+                    <p class="review-text-short mb-1" style="line-height: 1.5; font-size: 0.95rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;"><%= review.comment %></p>
+                    <p class="review-text-full mb-1" style="line-height: 1.5; font-size: 0.95rem; display: none;"><%= review.comment %></p>
+                    <% if (review.comment && review.comment.length > 120) { %>
+                        <a href="javascript:void(0)" class="show-more-link fw-bold" style="color: #222; text-decoration: underline; font-size: 0.9rem;" onclick="toggleReview(this)">Show more</a>
+                    <% } %>
+                </div>
+                <% if (review.image && review.image.url) { %>
+                    <div class="review-image-container mt-3 mb-2 overflow-hidden rounded-3 border" style="height: 120px;">
+                        <img src="<%= review.image.url %>" class="w-100 h-100 object-fit-cover" style="cursor: pointer;" onclick="window.open('<%= review.image.url %>', '_blank')">
+                    </div>
+                <% } %>
+                <% if (currUser && review.author && review.author._id.equals(currUser._id)) { %>
+                    <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="mt-2 delete-review-form">
+                      <button type="button" class="btn btn-sm text-danger fw-bold px-0 delete-review-btn" style="background: none; border: none; font-size: 0.8rem;">
+                          <i class="fa-solid fa-trash-can me-1"></i>Delete
+                      </button>
+                    </form>
+                <% } %>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+
+      <!-- Map Section -->
+      <hr class="my-5" />
+      <div class="col-12 mb-5">
+        <h4 class="fw-bold mb-4"><i class="fa-solid fa-map-location-dot me-2" style="color: #ff385c;"></i>Where you'll be</h4>
+        <div id="map" class="rounded-4 shadow-sm border" style="height: 400px; width: 100%; z-index: 1; background-color: #eee;"></div>
+        <p class="text-muted mt-3 fw-bold"><i class="fa-solid fa-location-crosshairs me-2"></i><%= listing.location %>, <%= listing.country %></p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mapbox & Leaflet Assets -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    (function initUniversalMap() {
+        const mapContainer = document.getElementById('map');
+        const mapToken = "<%= mapToken %>";
+        const listing = <%- JSON.stringify(listing) %>;
+        
+        let coords = [78.4867, 17.3850]; // Fallback coordinates
+        if (listing.geometry && listing.geometry.coordinates && listing.geometry.coordinates.length === 2) {
+            coords = listing.geometry.coordinates;
+        }
+
+        const latLon = [coords[1], coords[0]];
+
+        // Attempt Mapbox first
+        try {
+            mapboxgl.accessToken = mapToken;
+            const mapbox = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v12',
+                center: coords,
+                zoom: 10
+            });
+
+            mapbox.on('error', (e) => {
+                console.warn("Mapbox failed to load tiles, switching to Leaflet fallback...");
+                loadLeafletFallback();
+            });
+
+            new mapboxgl.Marker({ color: "#ff385c" })
+                .setLngLat(coords)
+                .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`<h6>${listing.title}</h6>`))
+                .addTo(mapbox);
+
+        } catch (e) {
+            console.error("Mapbox init failed, using Leaflet:", e);
+            loadLeafletFallback();
+        }
+
+        function loadLeafletFallback() {
+            mapContainer.innerHTML = ""; // Clear any partial Mapbox junk
+            const map = L.map('map').setView(latLon, 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+            L.marker(latLon).addTo(map)
+                .bindPopup("<h6><%= listing.title %></h6>")
+                .openPopup();
+            
+            setTimeout(() => { map.invalidateSize(); }, 500);
+        }
+    })();
+  </script>
+
+
+
+<script>
+// Booking Calculator
+(() => {
+    const checkinInput = document.getElementById('checkin');
+    const checkoutInput = document.getElementById('checkout');
+    const totalDisplay = document.getElementById('bookingTotal');
+    const bookBtn = document.getElementById('bookNowBtn');
+    const pricePerNight = <%= listing.price || 0 %>;
+
+    // Set min date to today
+    const today = new Date().toISOString().split('T')[0];
+    if (checkinInput) checkinInput.min = today;
+    if (checkoutInput) checkoutInput.min = today;
+
+    function calcTotal() {
+        if (!checkinInput || !checkoutInput) return;
+        const checkin = new Date(checkinInput.value);
+        const checkout = new Date(checkoutInput.value);
+        const guestInput = document.getElementById('guests');
+        const guests = guestInput ? parseInt(guestInput.value) : 1;
+
+        if (checkinInput.value && checkoutInput.value && checkout > checkin) {
+            const nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+            
+            // 25% extra for each guest after the first one
+            const extraCharge = guests > 1 ? (guests - 1) * 0.25 * pricePerNight : 0;
+            const total = nights * (pricePerNight + extraCharge);
+            
+            totalDisplay.innerHTML = `&#8377; ${total.toLocaleString('en-IN')} <span class="fs-6 fw-normal text-muted">(${nights} night${nights > 1 ? 's' : ''})</span>`;
+        } else {
+            totalDisplay.innerHTML = `&#8377; ${pricePerNight.toLocaleString('en-IN')}`;
+        }
+    }
+
+    if (checkinInput) {
+        checkinInput.addEventListener('change', () => {
+            // Auto-set checkout min to day after checkin
+            const nextDay = new Date(checkinInput.value);
+            nextDay.setDate(nextDay.getDate() + 1);
+            checkoutInput.min = nextDay.toISOString().split('T')[0];
+            if (checkoutInput.value && new Date(checkoutInput.value) <= new Date(checkinInput.value)) {
+                checkoutInput.value = nextDay.toISOString().split('T')[0];
+            }
+            calcTotal();
+        });
+    }
+    if (checkoutInput) checkoutInput.addEventListener('change', calcTotal);
+    
+    // Add event listener for guest count changes
+    const guestInput = document.getElementById('guests');
+    if (guestInput) {
+        guestInput.addEventListener('change', calcTotal);
+    }
+
+    if (bookBtn) {
+        // Toggle Logic for Rescheduling
+        const rescheduleBtn = document.getElementById('rescheduleBtn');
+        const cancelRescheduleBtn = document.getElementById('cancelRescheduleBtn');
+        const bookingStatusCard = document.getElementById('bookingStatusCard');
+        const rescheduleUI = document.getElementById('rescheduleUI');
+
+        if (rescheduleBtn) {
+            rescheduleBtn.addEventListener('click', () => {
+                bookingStatusCard.style.display = 'none';
+                rescheduleUI.style.display = 'block';
+                checkinInput.focus();
+            });
+        }
+
+        if (cancelRescheduleBtn) {
+            cancelRescheduleBtn.addEventListener('click', () => {
+                rescheduleUI.style.display = 'none';
+                bookingStatusCard.style.display = 'block';
+            });
+        }
+
+        bookBtn.addEventListener('mouseenter', () => {
+            bookBtn.style.transform = 'scale(1.02)';
+            bookBtn.style.boxShadow = '0 8px 20px rgba(255,56,92,0.4)';
+        });
+        bookBtn.addEventListener('mouseleave', () => {
+            bookBtn.style.transform = 'scale(1)';
+            bookBtn.style.boxShadow = 'none';
+        });
+        // Common click handler for both buttons
+        const handleBookingSubmit = (btnType) => {
+            const isUserLoggedIn = <%= (typeof currUser !== 'undefined' && currUser) ? 'true' : 'false' %>;
+            
+            if (!isUserLoggedIn) {
+                window.location.href = `/listings/<%= listing._id %>/reserve`;
+                return false;
+            }
+
+            if (!checkinInput.value || !checkoutInput.value) {
+                const toast = document.createElement('div');
+                toast.className = 'position-fixed bottom-0 end-0 p-3';
+                toast.style.zIndex = '1100';
+                toast.innerHTML = `<div class="toast show align-items-center text-white bg-danger border-0" role="alert"><div class="d-flex"><div class="toast-body">Please select check-in and check-out dates!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+                return false;
+            }
+            
+            if (btnType === 'reschedule') {
+                document.getElementById('hiddenRescheduleCheckin').value = checkinInput.value;
+                document.getElementById('hiddenRescheduleCheckout').value = checkoutInput.value;
+                document.getElementById('hiddenRescheduleGuests').value = document.getElementById('guests').value;
+            } else {
+                document.getElementById('hiddenCheckin').value = checkinInput.value;
+                document.getElementById('hiddenCheckout').value = checkoutInput.value;
+                document.getElementById('hiddenGuests').value = document.getElementById('guests').value;
+            }
+            return true;
+        };
+
+        if (bookBtn) {
+            bookBtn.closest('form').addEventListener('submit', (e) => {
+                if (!handleBookingSubmit('new')) e.preventDefault();
+            });
+        }
+
+        const rescheduleConfirmBtn = document.getElementById('rescheduleConfirmBtn');
+        if (rescheduleConfirmBtn) {
+            rescheduleConfirmBtn.closest('form').addEventListener('submit', (e) => {
+                if (!handleBookingSubmit('reschedule')) e.preventDefault();
+            });
+        }
+    }
+    
+    const cancelTripBtn = document.getElementById('cancelTripBtn');
+    if (cancelTripBtn) {
+        cancelTripBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const result = await Swal.fire({
+                title: 'Cancel your trip?',
+                text: "Are you sure you want to cancel this reservation? This cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ff385c',
+                cancelButtonColor: '#222',
+                confirmButtonText: 'Yes, cancel it',
+                background: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#1e1e1e' : '#fff',
+                color: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#fff' : '#222',
+                customClass: {
+                    popup: 'rounded-4 border-0 shadow-lg',
+                    confirmButton: 'rounded-pill px-4',
+                    cancelButton: 'rounded-pill px-4'
+                }
+            });
+
+            if (result.isConfirmed) {
+                cancelTripBtn.closest('form').submit();
+            }
+        });
+    }
+
+    // Delete Listing Confirmation
+    const deleteListingBtn = document.getElementById('deleteListingBtn');
+    if (deleteListingBtn) {
+        deleteListingBtn.addEventListener('click', async () => {
+            const result = await Swal.fire({
+                title: 'Delete this Listing?',
+                text: "This will permanently remove your hotel from WanderLust. You cannot undo this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ff385c',
+                cancelButtonColor: '#222',
+                confirmButtonText: 'Yes, delete it',
+                background: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#1e1e1e' : '#fff',
+                color: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#fff' : '#222',
+                customClass: {
+                    popup: 'rounded-4 border-0 shadow-lg',
+                    confirmButton: 'rounded-pill px-4',
+                    cancelButton: 'rounded-pill px-4'
+                }
+            });
+
+            if (result.isConfirmed) {
+                document.getElementById('deleteListingForm').submit();
+            }
+        });
+    }
+
+    // Delete Review Confirmation
+    document.querySelectorAll('.delete-review-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const result = await Swal.fire({
+                title: 'Delete your review?',
+                text: "Your feedback will be removed. This cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ff385c',
+                cancelButtonColor: '#222',
+                confirmButtonText: 'Yes, delete it',
+                background: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#1e1e1e' : '#fff',
+                color: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#fff' : '#222',
+                customClass: {
+                    popup: 'rounded-4 border-0 shadow-lg',
+                    confirmButton: 'rounded-pill px-4',
+                    cancelButton: 'rounded-pill px-4'
+                }
+            });
+
+            if (result.isConfirmed) {
+                btn.closest('form').submit();
+            }
+        });
+    });
+})();
+
+
+</script>
+
+<!-- Booking Confirmation Modal -->
+<div class="modal fade" id="bookingConfirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+      <div class="modal-body p-0">
+        <div class="text-center py-5" style="background: linear-gradient(135deg, #ff385c, #e03150);">
+          <div class="mb-3">
+            <i class="fa-solid fa-circle-check text-white" style="font-size: 5rem;"></i>
+          </div>
+          <h3 class="text-white fw-bold">Booking Confirmed!</h3>
+          <p class="text-white-50 mb-0">Pack your bags, you're going to <%= listing.location %>!</p>
+        </div> <!-- End border-top -->
+      </div> <!-- End text-center -->
+    </div> <!-- End modal-body -->
+  </div> <!-- End modal-content -->
+</div> <!-- End modal-dialog -->
+</div> <!-- End photoModal -->
+
+
+<!-- Chat Modal -->
+<div class="modal fade" id="chatModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header border-bottom p-4">
+                <div class="d-flex align-items-center">
+                    <% if(listing.owner && listing.owner.profileImage && listing.owner.profileImage.url) { %>
+                        <img src="<%= listing.owner.profileImage.url %>" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover;">
+                    <% } else if(listing.owner) { %>
+                        <div class="rounded-circle bg-danger text-white d-flex justify-content-center align-items-center me-3" style="width: 45px; height: 45px; font-weight: bold;">
+                            <%= listing.owner.username.charAt(0).toUpperCase() %>
+                        </div>
+                    <% } %>
+                    <div>
+                        <h6 class="modal-title fw-bold mb-0">Chat with <%= listing.owner ? listing.owner.username : 'Host' %></h6>
+                        <div id="userStatusContainer">
+                            <small class="text-success fw-bold" id="onlineStatus">
+                                <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> Online
+                            </small>
+                            <small class="text-muted d-none" id="lastSeenStatus">
+                                Last seen <%= new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 bg-light" style="height: 400px; overflow-y: auto;" id="chatMessages">
+                <div class="p-4 text-center text-muted small">
+                    <i class="fa-solid fa-lock me-1"></i> Messages are secure and private.
+                </div>
+                <!-- Messages will be loaded here via JS -->
+            </div>
+            <div class="modal-footer p-3 border-top bg-white">
+                <% if (currUser && listing.owner && listing.owner._id.equals(currUser._id)) { %>
+                    <div class="w-100 text-center py-2">
+                        <span class="badge rounded-pill bg-light text-muted p-2">You are the host of this listing</span>
+                    </div>
+                <% } else { %>
+                    <form id="chatForm" class="w-100 d-flex gap-2">
+                        <input type="text" id="chatInput" class="form-control rounded-pill border-0 bg-light px-4 py-2" placeholder="Type your message..." required>
+                        <button type="submit" class="btn btn-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+// Chat Logic
+(() => {
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatModal = document.getElementById('chatModal');
+    
+    if (!chatForm) return;
+
+    // Defensive ID Extraction
+    const receiverId = "<%= (listing && listing.owner) ? (listing.owner._id || listing.owner) : '' %>";
+    const listingId = "<%= listing ? listing._id : '' %>";
+    const currUserId = "<%= currUser ? currUser._id : '' %>";
+    
+    if (!receiverId) {
+        chatMessages.innerHTML = '<div class="p-4 text-center text-muted">Chat is unavailable for this listing.</div>';
+        chatForm.style.display = 'none';
+        return;
+    }
+
+    async function loadMessages() {
+        try {
+            const res = await fetch(`/messages/${receiverId}?listingId=${listingId}`);
+            const messages = await res.json();
+            
+            chatMessages.innerHTML = '<div class="p-4 text-center text-muted small"><i class="fa-solid fa-lock me-1"></i> Messages are secure and private.</div>';
+            
+            messages.forEach(msg => {
+                const isMe = msg.sender._id === currUserId;
+                const div = document.createElement('div');
+                div.className = `d-flex ${isMe ? 'justify-content-end' : 'justify-content-start'} mb-3 px-4`;
+                div.innerHTML = `
+                    <div class="p-3 rounded-4 shadow-sm" style="max-width: 80%; background: ${isMe ? 'linear-gradient(135deg, #ff385c, #e03150)' : '#fff'}; color: ${isMe ? '#fff' : '#222'};">
+                        <p class="mb-0">${msg.content}</p>
+                        <small class="opacity-50 mt-1 d-block" style="font-size: 0.7rem;">${new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
+                    </div>
+                `;
+                chatMessages.appendChild(div);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } catch (err) {
+            console.error('Failed to load messages', err);
+        }
+    }
+
+    function getSmartDate(date) {
+        const now = new Date();
+        const diff = now - date;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        
+        if (days === 0) return `today at ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+        if (days === 1) return `yesterday at ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+        if (days < 7) return `${date.toLocaleDateString([], {weekday: 'long'})} at ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+        return date.toLocaleDateString([], {day: 'numeric', month: 'short', year: 'numeric'});
+    }
+
+    // Dynamic Status Logic
+    chatModal.addEventListener('shown.bs.modal', () => {
+        loadMessages();
+        
+        const online = document.getElementById('onlineStatus');
+        const lastSeen = document.getElementById('lastSeenStatus');
+        
+        // Mock "Online" feel with smart date
+        const randomPast = new Date();
+        randomPast.setMinutes(randomPast.getMinutes() - Math.floor(Math.random() * 120));
+        if (lastSeen) lastSeen.innerText = `Last seen ${getSmartDate(randomPast)}`;
+
+        setTimeout(() => {
+            if (online && lastSeen) {
+                online.classList.remove('d-none');
+                lastSeen.classList.add('d-none');
+            }
+        }, 800);
+    });
+
+    chatModal.addEventListener('hidden.bs.modal', () => {
+        const online = document.getElementById('onlineStatus');
+        const lastSeen = document.getElementById('lastSeenStatus');
+        if (online && lastSeen) {
+            online.classList.add('d-none');
+            lastSeen.classList.remove('d-none');
+        }
+    });
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const content = chatInput.value.trim();
+        if (!content) return;
+
+        const submitBtn = chatForm.querySelector('button');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+        try {
+            console.log("Sending message to:", receiverId, "Listing:", listingId);
+            const res = await fetch('/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ receiverId, listingId, content })
+            });
+
+            if (res.ok) {
+                chatInput.value = '';
+                await loadMessages();
+            } else {
+                const errData = await res.json().catch(() => ({}));
+                alert(`Server Error: ${res.status} - ${errData.message || 'Unknown'}`);
+            }
+        } catch (err) {
+            console.error('Full Error:', err);
+            alert(`Connection Error: ${err.message}. Check browser console for details.`);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
+        }
+    });
+
+    // Simple Polling for "Real-Time" feel (every 3 seconds)
+    let pollInterval = setInterval(() => {
+        if (chatModal.classList.contains('show')) {
+            loadMessages();
+        }
+    }, 3000);
+
+    // Clean up interval when modal closes
+    chatModal.addEventListener('hidden.bs.modal', () => {
+        // We can keep polling or pause it. Let's keep it simple for now.
+    });
+})();
+
+
+// GLOBAL GALLERY ENGINE (Hardened)
+window.openPhotoModal = function(index) {
+    try {
+        const modalEl = document.getElementById('photoModal');
+        const carouselEl = document.getElementById('photoCarousel');
+        
+        if (!modalEl || !carouselEl) {
+            console.error("Gallery elements not found");
+            return;
+        }
+
+        const bsCarousel = bootstrap.Carousel.getOrCreateInstance(carouselEl);
+        const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+        bsCarousel.to(index);
+        bsModal.show();
+    } catch (e) {
+        console.error("Gallery Error:", e);
+    }
+};
+
+// Keyboard Support
+document.addEventListener('keydown', (e) => {
+    const modalEl = document.getElementById('photoModal');
+    if (modalEl && modalEl.classList.contains('show')) {
+        const carouselEl = document.getElementById('photoCarousel');
+        const bsCarousel = bootstrap.Carousel.getInstance(carouselEl);
+        if (bsCarousel) {
+            if (e.key === 'ArrowLeft') bsCarousel.prev();
+            if (e.key === 'ArrowRight') bsCarousel.next();
+        }
+    }
+});
+
+// Review Toggle
+window.toggleReview = function(link) {
+    const container = link.closest('.review-text-container');
+    const short = container.querySelector('.review-text-short');
+    const full = container.querySelector('.review-text-full');
+    if (short.style.display !== 'none') {
+        short.style.display = 'none';
+        full.style.display = 'block';
+        link.textContent = 'Show less';
+    } else {
+        short.style.display = '-webkit-box';
+        full.style.display = 'none';
+        link.textContent = 'Show more';
+    }
+};
+
+// Gallery Counter
+document.addEventListener('DOMContentLoaded', () => {
+    const carouselEl = document.getElementById('photoCarousel');
+    const counterEl = document.getElementById('carouselCounter');
+    if (carouselEl && counterEl) {
+        carouselEl.addEventListener('slid.bs.carousel', function (event) {
+            counterEl.innerText = event.to + 1;
+        });
+    }
+});
+</script>

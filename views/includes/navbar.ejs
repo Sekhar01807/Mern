@@ -1,0 +1,108 @@
+<% if (typeof currUser === 'undefined') { var currUser = null; } %>
+<nav class="navbar navbar-expand-md bg-body shadow-sm sticky-top" style="border-bottom: 1px solid var(--bs-border-color); padding: 0.8rem 0;">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link fw-bold" href="/listings" style="transition: color 0.2s;"><i class="fa-solid fa-earth-americas me-1"></i> Explore</a>
+      </div>
+        <div class="navbar-nav ms-auto">
+        <form class="d-flex search-form shadow-sm position-relative" role="search" action="/listings" method="GET">
+          <input class="form-control search-input" type="search" name="search" id="destinationSearch" placeholder="Search Destinations" aria-label="Search" autocomplete="off"/> 
+          <button class="btn btn-danger btn-search" type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <div id="searchSuggestions" class="position-absolute w-100 bg-white shadow-lg rounded-3 overflow-hidden d-none" style="top: 100%; left: 0; z-index: 2000; margin-top: 5px;"></div>
+        </form>
+       </div>
+
+<script src="https://api.mapbox.com/search-js/v1.0.0-beta.18/main.js"></script>
+<script>
+(() => {
+    const searchInput = document.getElementById('destinationSearch');
+    const suggestionsContainer = document.getElementById('searchSuggestions');
+    const mapToken = "<%= locals.mapToken || '' %>"; 
+
+    if (!searchInput || !suggestionsContainer || !mapToken) return;
+
+    searchInput.addEventListener('input', async (e) => {
+        const query = e.target.value;
+        if (query.length < 2) {
+            suggestionsContainer.classList.add('d-none');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapToken}&types=place,address,locality&limit=5`);
+            const data = await response.json();
+
+            if (data.features && data.features.length > 0) {
+                suggestionsContainer.innerHTML = '';
+                data.features.forEach(feature => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item p-3 border-bottom cursor-pointer';
+                    div.style.cursor = 'pointer';
+                    div.innerHTML = `<i class="fa-solid fa-location-dot me-2 text-danger"></i>${feature.place_name}`;
+                    div.addEventListener('click', () => {
+                        searchInput.value = feature.place_name;
+                        suggestionsContainer.classList.add('d-none');
+                        searchInput.closest('form').submit();
+                    });
+                    div.addEventListener('mouseover', () => div.style.backgroundColor = '#f8f9fa');
+                    div.addEventListener('mouseout', () => div.style.backgroundColor = 'white');
+                    suggestionsContainer.appendChild(div);
+                });
+                suggestionsContainer.classList.remove('d-none');
+            } else {
+                suggestionsContainer.classList.add('d-none');
+            }
+        } catch (err) {
+            console.error('Autocomplete error:', err);
+        }
+    });
+
+    // Close suggestions on click outside
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            suggestionsContainer.classList.add('d-none');
+        }
+    });
+})();
+</script>
+       <div class="navbar-nav ms-auto align-items-center">
+        <!-- Dark Mode Toggle -->
+        <button id="themeToggleBtn" class="btn btn-light rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border: 1px solid var(--bs-border-color); transition: all 0.3s;" title="Toggle Theme">
+            <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
+        </button>
+
+        <% if(!currUser){ %>
+        <a class="nav-link fw-bold mx-2" href="/signup">Sign Up</a>
+        <a class="nav-link fw-bold mx-2" href="/login">Log In</a>
+        <% } else { %>
+           <a class="nav-link fw-bold text-danger mx-2" href="/listings/new"><i class="fa-solid fa-plus-circle me-1"></i> Add New Hotel</a>
+           
+           <div class="nav-item dropdown ms-3">
+               <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0; border: none;">
+                   <% if(currUser.profileImage && currUser.profileImage.url && !currUser.profileImage.url.includes("dwy7q5x2g") && currUser.profileImage.url !== "") { %>
+                       <img src="<%= currUser.profileImage.url %>" alt="Profile" class="rounded-circle" style="width: 35px; height: 35px; object-fit: cover; border: 2px solid crimson;">
+                   <% } else { %>
+                       <div class="rounded-circle bg-danger text-white d-flex justify-content-center align-items-center" style="width: 35px; height: 35px;">
+                           <%= currUser.username.charAt(0).toUpperCase() %>
+                       </div>
+                   <% } %>
+               </a>
+               <ul class="dropdown-menu dropdown-menu-end mt-2" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                   <li><a class="dropdown-item py-2" href="/profile"><i class="fa-solid fa-user me-2"></i> <b>My Profile</b></a></li>
+                   <li><a class="dropdown-item py-2" href="/messages"><i class="fa-solid fa-message me-2"></i> <b>Messages</b></a></li>
+                   <li><hr class="dropdown-divider"></li>
+                   <li><a class="dropdown-item text-danger py-2" href="/logout"><i class="fa-solid fa-right-from-bracket me-2"></i> Log Out</a></li>
+               </ul>
+           </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>

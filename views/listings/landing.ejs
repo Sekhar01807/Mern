@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderLust — Discover Your Next Adventure</title>
+    <meta name="description" content="Find unique stays and experiences around the world. Book villas, rooms, and hotels at the best prices.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            color: #1a1a2e;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR ===== */
+        .landing-nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            padding: 1.2rem 3rem;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: background 0.4s, box-shadow 0.4s;
+        }
+        .landing-nav.scrolled {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        }
+        .landing-nav .logo {
+            font-size: 1.6rem; font-weight: 800; text-decoration: none;
+            color: #fff; transition: color 0.3s;
+        }
+        .landing-nav.scrolled .logo { color: #e63946; }
+        .landing-nav .logo i { margin-right: 0.5rem; }
+        .nav-links a {
+            color: rgba(255,255,255,0.9); text-decoration: none;
+            margin-left: 2rem; font-weight: 500; font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        .landing-nav.scrolled .nav-links a { color: #333; }
+        .nav-links a:hover { color: #e63946; }
+        .btn-nav {
+            background: #e63946; color: #fff !important; padding: 0.5rem 1.5rem;
+            border-radius: 50px; font-weight: 600;
+        }
+        .btn-nav:hover { background: #c1121f; }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(15,15,40,0.7), rgba(230,57,70,0.4)),
+                        url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80') center/cover no-repeat;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; color: #fff;
+            padding: 6rem 1rem 4rem;
+        }
+        .hero-content { max-width: 720px; }
+        .hero h1 {
+            font-size: 3.8rem; font-weight: 800; line-height: 1.15;
+            margin-bottom: 1.2rem;
+            animation: fadeUp 1s ease-out;
+        }
+        .hero p {
+            font-size: 1.2rem; opacity: 0.9; margin-bottom: 2.5rem;
+            animation: fadeUp 1s ease-out 0.2s both;
+        }
+        .hero .btn-hero {
+            background: #e63946; color: #fff; border: none;
+            padding: 1rem 2.8rem; border-radius: 50px;
+            font-size: 1.1rem; font-weight: 700; text-decoration: none;
+            display: inline-block; transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeUp 1s ease-out 0.4s both;
+        }
+        .hero .btn-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(230,57,70,0.4);
+        }
+        .hero-stats {
+            display: flex; gap: 3rem; justify-content: center;
+            margin-top: 3.5rem;
+            animation: fadeUp 1s ease-out 0.6s both;
+        }
+        .hero-stats .stat h3 { font-size: 2rem; font-weight: 800; }
+        .hero-stats .stat p { font-size: 0.85rem; opacity: 0.8; margin: 0; }
+
+        /* ===== FEATURES ===== */
+        .features {
+            padding: 6rem 2rem; background: #f8f9fa;
+        }
+        .section-title {
+            text-align: center; margin-bottom: 3.5rem;
+        }
+        .section-title h2 {
+            font-size: 2.4rem; font-weight: 800;
+        }
+        .section-title p { color: #666; max-width: 500px; margin: 0.8rem auto 0; }
+        .feature-card {
+            background: #fff; border-radius: 20px; padding: 2.5rem 2rem;
+            text-align: center; transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+        .feature-icon {
+            width: 70px; height: 70px; border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem; font-size: 1.6rem; color: #fff;
+        }
+        .fi-1 { background: linear-gradient(135deg, #e63946, #ff6b6b); }
+        .fi-2 { background: linear-gradient(135deg, #457b9d, #48cae4); }
+        .fi-3 { background: linear-gradient(135deg, #2a9d8f, #52e3c2); }
+        .fi-4 { background: linear-gradient(135deg, #f4a261, #e76f51); }
+        .feature-card h5 { font-weight: 700; margin-bottom: 0.6rem; }
+        .feature-card p { color: #666; font-size: 0.92rem; margin: 0; }
+
+        /* ===== DESTINATIONS ===== */
+        .destinations { padding: 6rem 2rem; }
+        .dest-card {
+            border-radius: 20px; overflow: hidden; position: relative;
+            height: 320px; transition: transform 0.4s;
+        }
+        .dest-card:hover { transform: scale(1.03); }
+        .dest-card img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .dest-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 1.5rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.75));
+            color: #fff;
+        }
+        .dest-overlay h5 { font-weight: 700; margin-bottom: 0.2rem; }
+        .dest-overlay p { font-size: 0.85rem; opacity: 0.85; margin: 0; }
+
+        /* ===== CTA ===== */
+        .cta {
+            padding: 6rem 2rem; text-align: center;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+        }
+        .cta h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+        .cta p { opacity: 0.8; max-width: 500px; margin: 0 auto 2rem; }
+        .cta .btn-hero {
+            background: #e63946; color: #fff; border: none;
+            padding: 1rem 2.8rem; border-radius: 50px;
+            font-size: 1.05rem; font-weight: 700; text-decoration: none;
+            display: inline-block; transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .cta .btn-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(230,57,70,0.4);
+        }
+
+        /* ===== LANDING FOOTER ===== */
+        .landing-footer {
+            background: #0d1117; color: rgba(255,255,255,0.6);
+            padding: 3rem 2rem; text-align: center; font-size: 0.9rem;
+        }
+        .landing-footer a { color: rgba(255,255,255,0.8); margin: 0 0.6rem; }
+        .landing-footer i { font-size: 1.2rem; transition: color 0.3s; }
+        .landing-footer i:hover { color: #e63946; }
+        .landing-footer .copyright { margin-top: 1rem; opacity: 0.5; }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.4rem; }
+            .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+            .landing-nav { padding: 1rem 1.5rem; }
+            .nav-links a { margin-left: 1rem; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="landing-nav" id="landingNav">
+        <a href="/" class="logo"><i class="fa-regular fa-compass"></i>WanderLust</a>
+        <div class="nav-links">
+            <a href="/listings">Explore</a>
+            <% if(typeof currUser !== 'undefined' && currUser){ %>
+                <a href="/listings/new">Add Listing</a>
+                <a href="/logout">Logout</a>
+            <% } else { %>
+                <a href="/login">Login</a>
+                <a href="/signup" class="btn-nav">Sign Up</a>
+            <% } %>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1>Discover Places You'll Never Forget</h1>
+            <p>Explore unique stays around the world — from beachfront villas to mountain cabins. Your next adventure is just one click away.</p>
+            <a href="/listings" class="btn-hero"><i class="fa-solid fa-magnifying-glass me-2"></i>Explore All Stays</a>
+            <div class="hero-stats">
+                <div class="stat">
+                    <h3>500+</h3>
+                    <p>Unique Stays</p>
+                </div>
+                <div class="stat">
+                    <h3>120+</h3>
+                    <p>Destinations</p>
+                </div>
+                <div class="stat">
+                    <h3>10K+</h3>
+                    <p>Happy Guests</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose WanderLust?</h2>
+                <p>We make travel planning effortless, secure, and delightful.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon fi-1"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h5>Verified Listings</h5>
+                        <p>Every property is reviewed and verified for quality and safety.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon fi-2"><i class="fa-solid fa-tag"></i></div>
+                        <h5>Best Prices</h5>
+                        <p>Competitive pricing with no hidden fees. What you see is what you pay.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon fi-3"><i class="fa-solid fa-star"></i></div>
+                        <h5>Trusted Reviews</h5>
+                        <p>Real reviews from real guests help you make the right choice.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon fi-4"><i class="fa-solid fa-bolt"></i></div>
+                        <h5>Instant Booking</h5>
+                        <p>Book your stay instantly with a seamless one-click experience.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Destinations -->
+    <section class="destinations">
+        <div class="container">
+            <div class="section-title">
+                <h2>Popular Destinations</h2>
+                <p>Handpicked locations loved by travelers worldwide.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <a href="/listings" class="text-decoration-none">
+                        <div class="dest-card">
+                            <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80" alt="Dubai">
+                            <div class="dest-overlay">
+                                <h5>Dubai, UAE</h5>
+                                <p><i class="fa-solid fa-location-dot me-1"></i>42 stays available</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <a href="/listings" class="text-decoration-none">
+                        <div class="dest-card">
+                            <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=600&q=80" alt="Maldives">
+                            <div class="dest-overlay">
+                                <h5>Maldives</h5>
+                                <p><i class="fa-solid fa-location-dot me-1"></i>28 stays available</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <a href="/listings" class="text-decoration-none">
+                        <div class="dest-card">
+                            <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&q=80" alt="India">
+                            <div class="dest-overlay">
+                                <h5>India</h5>
+                                <p><i class="fa-solid fa-location-dot me-1"></i>65 stays available</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <a href="/listings" class="text-decoration-none">
+                        <div class="dest-card">
+                            <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80" alt="Paris">
+                            <div class="dest-overlay">
+                                <h5>Paris, France</h5>
+                                <p><i class="fa-solid fa-location-dot me-1"></i>53 stays available</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <a href="/listings" class="text-decoration-none">
+                        <div class="dest-card">
+                            <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80" alt="Tokyo">
+                            <div class="dest-overlay">
+                                <h5>Tokyo, Japan</h5>
+                                <p><i class="fa-solid fa-location-dot me-1"></i>37 stays available</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <h2>Ready to Start Your Journey?</h2>
+        <p>Join thousands of travelers who trust WanderLust for unforgettable experiences.</p>
+        <a href="/signup" class="btn-hero"><i class="fa-solid fa-user-plus me-2"></i>Create Free Account</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div>
+            <a href="#"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+        </div>
+        <div class="copyright">&copy; 2026 WanderLust Private Limited. All rights reserved.</div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const nav = document.getElementById('landingNav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+    </script>
+</body>
+</html>

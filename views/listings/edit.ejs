@@ -1,0 +1,104 @@
+<% layout("/layouts/boilerplate") %>
+
+    <div class="row mt-4 mb-5">
+        <div class="col-12 col-md-8 offset-md-2">
+            <%- include("../includes/flash.ejs") %>
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+                    <h3 class="mb-4 fw-bold" style="color: #ff385c;"><i class="fa-solid fa-pen-to-square me-2"></i>Edit Listing</h3>
+                    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation"
+                enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label"> Title</label>
+                    <input type="text" name="listing[title]" value="<%= listing.title %>" class="form-control" required>
+                    <div class="valid-feedback">Great Title</div>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea name="listing[description]" class="form-control"
+                        required><%= listing.description %></textarea>
+                    <div class="invalid-feedback"> Description is Empty</div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Main Listing Image</label>
+                    <div class="position-relative d-block w-100 mb-2" style="cursor: pointer; border-radius: 1rem; overflow: hidden;" onclick="document.getElementById('listingImage').click();">
+                        <img id="listing-preview" src="<%=orginalImageUrl%>" class="img-fluid" style="width: 100%; height: 300px; object-fit: cover;">
+                        <!-- Hover Edit Overlay -->
+                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center listing-overlay" style="background: rgba(0,0,0,0.5); opacity: 0; transition: 0.2s;">
+                            <i class="fa-solid fa-camera text-white mb-2" style="font-size: 3rem;"></i>
+                            <span class="text-white fw-bold fs-5">Change Main Photo</span>
+                        </div>
+                    </div>
+                    <input type="file" id="listingImage" name="listing[image]" accept=".png, .jpg, .jpeg, .webp, image/*" style="display: none;">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Add More Photos</label>
+                    <input type="file" name="listing[images]" class="form-control mb-3" accept=".png, .jpg, .jpeg, .webp, image/*" multiple>
+                    
+                    <% if(listing.images && listing.images.length > 0) { %>
+                        <p class="text-muted small fw-bold mb-2">Existing Additional Photos:</p>
+                        <div class="row g-2">
+                            <% for(let img of listing.images) { %>
+                                <div class="col-4 col-md-3">
+                                    <div class="position-relative rounded overflow-hidden shadow-sm" style="height: 100px;">
+                                        <img src="<%= img.url %>" class="w-100 h-100" style="object-fit: cover;">
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% } %>
+                </div>
+                <div class="row ">
+                    <div class="mb-3 col-md-4">
+                        <label for="price" class="form-label">Price</label>
+                        <input name="listing[price]" value="<%= listing.price %>" class="form-control" required>
+                        <div class="invalid-feedback">Price Field is Empty</div>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="Country" class="form-label">Country</label>
+                        <input type="text" name="listing[country]" value="<%= listing.country %>" class="form-control"
+                            required>
+                        <div class="invalid-feedback"> Country is Required</div>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="category" class="form-label">Category</label>
+                        <select name="listing[category]" class="form-select" required>
+                            <% for(let cat of categories) { %>
+                                <option value="<%= cat %>" <%= listing.category === cat ? 'selected' : '' %>><%= cat.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase()) %></option>
+                            <% } %>
+                        </select>
+                        <div class="invalid-feedback">Select a category</div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" name="listing[location]" value="<%= listing.location %>" class="form-control"
+                        required>
+                    <div class="invalid-feedback">Location is Required</div>
+                </div>
+                <button class="btn btn-danger w-100 py-2 fs-5 fw-bold rounded-3" style="background-color: #ff385c; border: none; transition: 0.2s;">
+                    <i class="fa-solid fa-cloud-arrow-up me-2"></i>Save Changes
+                </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// Setup Cropper for Listing Image (Aspect ratio 16:9)
+document.addEventListener("DOMContentLoaded", () => {
+    if (typeof setupImageCropper === 'function') {
+        setupImageCropper('listingImage', 'listing-preview', 16/9);
+    }
+});
+
+// Overlay Hover Effect
+const listingContainer = document.querySelector('.position-relative.d-block.w-100');
+const listingOverlay = document.querySelector('.listing-overlay');
+if (listingContainer && listingOverlay) {
+    listingContainer.addEventListener('mouseover', () => { listingOverlay.style.opacity = '1'; });
+    listingContainer.addEventListener('mouseout', () => { listingOverlay.style.opacity = '0'; });
+}
+</script>
