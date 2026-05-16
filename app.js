@@ -82,7 +82,9 @@ const limiter = rateLimit({
 app.use("/login", limiter);
 app.use("/signup", limiter);
 
-const store = require('connect-mongo').create({
+const MongoStore = require("connect-mongo");
+
+const store = MongoStore.create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 3600,
     crypto: {
