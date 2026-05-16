@@ -82,29 +82,30 @@ const limiter = rateLimit({
 app.use("/login", limiter);
 app.use("/signup", limiter);
 
-const store = require('connect-mongo').default.create({
+const store = require('connect-mongo').create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 3600,
     crypto: {
-        secret: process.env.SECRET,
+        secret: process.env.SECRET || "thisshouldbeabettersecret",
     }
 });
 
-store.on("error", () => {
+store.on("error", (err) => {
     console.log("ERROR IN MONGO SESSION STORE", err);
 });
 
 const sessionOptions = {
     store,
-    secret: process.env.SECRET,
+    name: 'session',
+    secret: process.env.SECRET || "thisshouldbeabettersecret",
     resave: false,
     saveUninitialized: false,
-    rolling: true,
+    proxy: true, // Required for Render/Heroku/Vercel
     cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        expires: Date.now() + 14 * 24 * 60 * 60 * 1000,
-        maxAge: 14 * 24 * 60 * 60 * 1000, 
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000, 
     },
 };
 
